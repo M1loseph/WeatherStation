@@ -48,19 +48,21 @@ weather read_bme()
 void setup()
 {
     INIT_DEBUG
+    pinMode(config::diode_pin, OUTPUT);
+    digitalWrite(config::diode_pin, LOW);
     LOG_NL("Connecting to wifi...")
     if(!connect_to_wifi(config::signalise_threshold))
     {
         LOG_NL("Unable to connect to WiFi");
         LOG_NL("Going into deep sleep...");
-        pinMode(config::diode_pin, OUTPUT);
         digitalWrite(config::diode_pin, HIGH);
         ESP.deepSleep(config::sleep_time_on_error);
     }
-    if(!bme.begin())
+    if(!bme.begin(0x76))
     {
         LOG_NL("Unable to init BME sensor")
         LOG_NL("Going into deep sleep...")
+        digitalWrite(config::diode_pin, HIGH);
         ESP.deepSleep(config::sleep_time_on_error);
     }
 
@@ -72,25 +74,19 @@ void setup()
     doc["pressure"] = w.pressure;
 
     SERIALIZE(doc);
+    LOG_NL();
 
     HTTPClient http;
     http.begin(network::server);
+
+    String message_body;
+    serializeJson(doc, message_body);
     http.addHeader("Content-Type", "application/json");
-
-    if(http.connected())
-    {
-        String message_body;
-        serializeJson(doc, message_body);
-        int client_error = http.POST(message_body);
-
-        LOG_F("Server response: %s", http.errorToString(client_error).c_str())
-    }
-    else
-    {
-        LOG_NL("Unable to connect to sever");
-    }
-    LOG_NL("Going into deep sleep...")
+    int client_error = http.POST(message_body);
+    LOG_F("Server response: %s\n", http.errorToString(client_error).c_str())
     http.end();
+
+    LOG_NL("Going into deep sleep...")
     ESP.deepSleep(config::sleep_time);
 }
 
