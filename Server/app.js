@@ -1,3 +1,4 @@
+require('dotenv').config()
 const path = require('path');
 const express = require('express');
 const routes = require('./routes')
@@ -11,7 +12,11 @@ app.use(bodyParser.json());
 
 app.use(routes);
 
-const port = 5000;
+// app.get('*', () => {
+
+// });
+
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`Listening on port ${port}`);
 });
