@@ -81,6 +81,9 @@ void setup()
 
     String message_body;
     serializeJson(doc, message_body);
+
+    LOG_NL(message_body);
+
     http.addHeader("Content-Type", "application/json");
     int client_error = http.POST(message_body);
     LOG_F("Server response: %s\n", http.errorToString(client_error).c_str())
