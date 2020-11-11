@@ -13,5 +13,6 @@ CREATE TABLE WeatherReadings
     room_name VARCHAR(30) NOT NULL REFERENCES Rooms(room_name),
     temperature FLOAT DEFAULT NULL,
     humidity FLOAT DEFAULT NULL,
-    pressure FLOAT DEFAULT NULL
+    pressure FLOAT DEFAULT NULL,
+    time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
