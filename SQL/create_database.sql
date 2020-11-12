@@ -1,6 +1,11 @@
 CREATE DATABASE WeatherStation;
 USE WeatherStation;
 
+CREATE USER 'WeatherClient'@'localhost' IDENTIFIED BY '!V44isG@9U';
+GRANT ALL PRIVILEGES ON * . * TO 'WeatherClient'@'localhost';
+
+FLUSH PRIVILEGES;
+
 CREATE TABLE Rooms
 (
     room_name VARCHAR(30) PRIMARY KEY,
