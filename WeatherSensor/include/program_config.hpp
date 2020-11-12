@@ -21,7 +21,7 @@ namespace config
     constexpr uint64_t sleep_time_on_error = 10e7;
 
     constexpr uint32_t signalise_threshold = 10U;
-    constexpr const char *room_name = "room_one";
+    constexpr const char *room_name = "seba";
     constexpr unsigned long monitor_speed = 115200;
 
 #ifdef ESP8266

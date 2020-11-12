@@ -17,55 +17,34 @@ function getParams(req, res, params) {
         const fromParsed = validateDate(from);
         const toParsed = validateDate(to);
 
-        console.log(fromParsed);
-        console.log(toParsed);
-
-        if (from !== undefined && to !== undefined) {
-            if (fromParsed !== null && toParsed !== null) {
-                make_request(
-                    `SELECT ${params}
+        if (fromParsed !== undefined && toParsed !== undefined) {
+            make_request(
+                `SELECT ${params}
                     FROM WeatherReadings
                     WHERE room_name = '${room}'
                         AND time BETWEEN '${fromParsed}' AND '${toParsed}'`,
-                    res
-                )
-            } else {
-                res.status(400);
-                res.json({
-                    message: 'Invalid date'
-                });
-            }
-        } else if (from !== undefined) {
-            if (fromParsed !== null) {
-                make_request(
-                    `SELECT ${params}
+                res
+            )
+        }
+        else if (fromParsed !== undefined) {
+            make_request(
+                `SELECT ${params}
                     FROM WeatherReadings
                     WHERE room_name = '${room}'
                         AND time > '${fromParsed}'`,
-                    res
-                )
-            } else {
-                res.status(400);
-                res.json({
-                    message: 'Invalid date'
-                });
-            }
-        } else if (to !== undefined) {
-            if (fromParsed !== null) {
-                make_request(
-                    `SELECT ${params}
+                res
+            )
+        }
+        else if (fromParsed !== undefined) {
+            make_request(
+                `SELECT ${params}
                      FROM WeatherReadings
                      WHERE room_name = '${room}'
                          AND time < '${toParsed}'`,
-                    res
-                )
-            } else {
-                res.status(400);
-                res.json({
-                    message: 'Invalid date'
-                });
-            }
-        } else {
+                res
+            )
+        }
+        else {
             make_request(
                 `SELECT ${params}
                  FROM WeatherReadings

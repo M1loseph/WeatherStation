@@ -1,7 +1,7 @@
-#ifndef __DEBUG_HPP__
-#define __DEBUG_HPP__
+#ifndef __WEATHER_DEBUG_HPP__
+#define __WEATHER_DEBUG_HPP__
 
-#if DEBUG
+#if WEATHER_DEBUG
 
 #define INIT_DEBUG Serial.begin(config::monitor_speed);
 #define LOG(var) Serial.print(var);
@@ -17,6 +17,6 @@
 #define LOG_F(...)
 #define SERIALIZE(json)
 
-#endif // DEBUG
+#endif // WEATHER_DEBUG
 
-#endif // __DEBUG_HPP__
+#endif // __WEATHER_DEBUG_HPP__
