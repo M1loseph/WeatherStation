@@ -1,51 +1,100 @@
 const make_request = require('./../database')
+const validateDate = require('./validators')
 
 function getRooms(_, res) {
     make_request(
         `SELECT room_name
-         FROM Rooms`,
+         FROM s`,
         res
     );
 }
 
-function getRoomData(req, res) {
-    const room_name = req.params.room;
-    make_request(
-        `SELECT temperature, humidity, pressure, time
-         FROM WeatherReadings
-         WHERE room_name = '${room_name}'`,
-        res
-    )
+function getParams(req, res, params) {
+
+    const { room, from, to } = req.query;
+    if (room !== undefined) {
+
+        const fromParsed = validateDate(from);
+        const toParsed = validateDate(to);
+
+        console.log(fromParsed);
+        console.log(toParsed);
+
+        if (from !== undefined && to !== undefined) {
+            if (fromParsed !== null && toParsed !== null) {
+                make_request(
+                    `SELECT ${params}
+                    FROM WeatherReadings
+                    WHERE room_name = '${room}'
+                        AND time BETWEEN '${fromParsed}' AND '${toParsed}'`,
+                    res
+                )
+            } else {
+                res.status(400);
+                res.json({
+                    message: 'Invalid date'
+                });
+            }
+        } else if (from !== undefined) {
+            if (fromParsed !== null) {
+                make_request(
+                    `SELECT ${params}
+                    FROM WeatherReadings
+                    WHERE room_name = '${room}'
+                        AND time > '${fromParsed}'`,
+                    res
+                )
+            } else {
+                res.status(400);
+                res.json({
+                    message: 'Invalid date'
+                });
+            }
+        } else if (to !== undefined) {
+            if (fromParsed !== null) {
+                make_request(
+                    `SELECT ${params}
+                     FROM WeatherReadings
+                     WHERE room_name = '${room}'
+                         AND time < '${toParsed}'`,
+                    res
+                )
+            } else {
+                res.status(400);
+                res.json({
+                    message: 'Invalid date'
+                });
+            }
+        } else {
+            make_request(
+                `SELECT ${params}
+                 FROM WeatherReadings
+                 WHERE room_name = '${room}'`,
+                res
+            )
+        }
+    } else {
+        res.status(400);
+        res.json({
+            message: 'Room must be provided'
+        });
+    }
 }
 
-function getRoomTemperature(req, res) {
-    const room_name = req.params.room;
-    make_request(
-        `SELECT temperature, time
-         FROM WeatherReadings
-         WHERE room_name = '${room_name}'`,
-        res
-    )
+function getWeather(req, res) {
+    getParams(req, res, 'temperature, humidity, pressure, time')
 }
 
-function getRoomHumidity(req, res) {
-    const room_name = req.params.room;
-    make_request(
-        `SELECT humidity, time
-         FROM WeatherReadings
-         WHERE room_name = '${room_name}'`,
-        res
-    )
+function getTemperature(req, res) {
+    getParams(req, res, 'temperature, time')
 }
 
-function getRoomPressure(req, res) {
-    const room_name = req.params.room;
-    make_request(
-        `SELECT pressure, time
-         FROM WeatherReadings
-         WHERE room_name = '${room_name}'`,
-        res
-    )
+function getHumidity(req, res) {
+    getParams(req, res, 'humidity, time')
+}
+
+function getPressure(req, res) {
+    getParams(req, res, 'pressure, time')
 }
 
 function newData(req, res) {
@@ -79,16 +128,16 @@ function newData(req, res) {
                 VALUES
                 ('${room_name}', ${temperature}, ${humidity}, ${pressure})
             `,
-            res);
+                res);
         }
     }
 }
 
 module.exports = {
     getRooms: getRooms,
-    getRoomData: getRoomData,
-    getRoomTemperature: getRoomTemperature,
-    getRoomHumidity: getRoomHumidity,
-    getRoomPressure: getRoomPressure,
+    getWeather: getWeather,
+    getTemperature: getTemperature,
+    getHumidity: getHumidity,
+    getPressure: getPressure,
     newData: newData,
 }
