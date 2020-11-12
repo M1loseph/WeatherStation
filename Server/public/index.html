@@ -4,13 +4,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0" defer></script>
     <script src="index.js" defer></script>
     <title>Weather Station</title>
 </head>
 
 <body>
-    <canvas id="chart"></canvas>
+    <header>
+        <h1>Amazing Weather Station</h1>
+    </header>
+
+    <main>
+        <form id="weatherForm" onsubmit="parseForm(event)">
+            <div class="form-group">
+                <label for="input-room">Room name</label>
+                <input id="input-room" type="text" class="form-control" placeholder="Enter room name">
+            </div>
+            <div class="form-group">
+                <label for="input-from">From</label>
+                <input id="input-from" type="datetime-local" class="form-control">
+                <label for="input-to">From</label>
+                <input id="input-to" type="datetime-local" class="form-control">
+            </div>
+            <div class="form-check">
+                <input id="input-temperature" type="checkbox" class="form-check-input">
+                <label class="form-check-label" for="input-temperature">Temperature</label>
+            </div>
+            <div class="form-check">
+                <input id="input-humidity" type="checkbox" class="form-check-input">
+                <label class="form-check-label" for="input-humidity">Humidity</label>
+            </div>
+            <div class="form-check">
+                <input id="input-pressure" type="checkbox" class="form-check-input">
+                <label class="form-check-label" for="input-pressure">Pressure</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+        <canvas id="temperature"></canvas>
+        <canvas id="humidity"></canvas>
+        <canvas id="pressure"></canvas>
+    </main>
+
+    <footer>
+    </footer>
 </body>
 
 </html>
