@@ -23,7 +23,7 @@ function make_request(query, res) {
                     });
                 })
                 .finally(() => {
-                    conn.end();
+                    conn.release();
                 })
         })
         .catch(err => {

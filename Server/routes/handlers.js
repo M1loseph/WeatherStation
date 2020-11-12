@@ -4,7 +4,7 @@ const validateDate = require('./validators')
 function getRooms(_, res) {
     make_request(
         `SELECT room_name
-         FROM s`,
+         FROM Rooms`,
         res
     );
 }
