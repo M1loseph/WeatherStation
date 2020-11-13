@@ -19,7 +19,7 @@ struct weather
 // if network fails signalize it with red diode
 bool connect_to_wifi(uint32_t threshhold)
 {
-    uint32 counter = 0;
+    uint32_t counter = 0;
     WiFi.begin(network::ssid, network::pass);
     while (WiFi.status() != WL_CONNECTED)
     {
