@@ -8,31 +8,4 @@ const pool = mariadb.createPool({
     connectionLimit: 5
 });
 
-function make_request(query, res) {
-    pool.getConnection()
-        .then(conn => {
-            conn.query(query)
-                .then(rows => {
-                    res.send(rows);
-                })
-                .catch(err => {
-                    res.status(400);
-                    res.json({
-                        message: 'Querry error',
-                        err: err
-                    });
-                })
-                .finally(() => {
-                    conn.release();
-                })
-        })
-        .catch(err => {
-            res.status(500);
-            res.json({
-                message: 'Could not establish connection',
-                err: err
-            });
-        });
-}
-
-module.exports = make_request;
+module.exports = pool;

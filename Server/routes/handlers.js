@@ -1,89 +1,53 @@
-const make_request = require('./../database')
+const pool = require('./../database')
 const validateDate = require('./validators')
 
 function getRooms(_, res) {
-    make_request(
-        `SELECT room_name
-         FROM Rooms`,
-        res
-    );
-}
-
-function getParams(req, res, params) {
-
-    const { room, from, to } = req.query;
-    if (room !== undefined) {
-
-        const fromParsed = validateDate(from);
-        const toParsed = validateDate(to);
-
-        if (fromParsed !== undefined && toParsed !== undefined) {
-            make_request(
-                `SELECT ${params}
-                    FROM WeatherReadings
-                    WHERE room_name = '${room}'
-                        AND time BETWEEN '${fromParsed}' AND '${toParsed}'`,
-                res
-            )
-        }
-        else if (fromParsed !== undefined) {
-            make_request(
-                `SELECT ${params}
-                    FROM WeatherReadings
-                    WHERE room_name = '${room}'
-                        AND time > '${fromParsed}'`,
-                res
-            )
-        }
-        else if (fromParsed !== undefined) {
-            make_request(
-                `SELECT ${params}
-                     FROM WeatherReadings
-                     WHERE room_name = '${room}'
-                         AND time < '${toParsed}'`,
-                res
-            )
-        }
-        else {
-            make_request(
-                `SELECT ${params}
-                 FROM WeatherReadings
-                 WHERE room_name = '${room}'`,
-                res
-            )
-        }
-    } else {
-        res.status(400);
-        res.json({
-            message: 'Room must be provided'
-        });
-    }
+    pool
+        .query('SELECT room_name FROM Rooms')
+        .then(rows => {
+            res.send(rows);
+        })
+        .catch(err => {
+            res.status(500);
+            res.send('Server side error')
+        })
 }
 
 function getWeather(req, res) {
-    getParams(req, res, 'temperature, humidity, pressure, time')
+    const { room } = req.params;
+    pool
+        .query('SELECT temperature, humidity, pressure, time FROM WeatherReadings WHERE room_name = ?', [room])
+        .then(rows => {
+            res.send(rows);
+        })
+        .catch(err => {
+            res.status(500);
+            res.send('Server side error')
+        })
 }
 
-function getTemperature(req, res) {
-    getParams(req, res, 'temperature, time')
-}
-
-function getHumidity(req, res) {
-    getParams(req, res, 'humidity, time')
-}
-
-function getPressure(req, res) {
-    getParams(req, res, 'pressure, time')
+function getWeatherBetween(req, res) {
+    const { room, from, to } = req.params;
+    const from_parsed = validateDate(from);
+    const to_parsed = validateDate(to);
+    if(from_parsed !== undefined && to_parsed !== undefined) {
+        pool
+            .query('SELECT temperature, humidity, pressure, time FROM WeatherReadings WHERE room_name = ? AND time BETWEEN ? AND ?', [room, from_parsed, to_parsed])
+            .then(rows => {
+                res.send(rows);
+            })
+            .catch(err => {
+                res.status(500);
+                res.send('Server side error');
+            })
+    } else {
+        res.status(400);
+        res.send('Incorrect date format');
+    }
 }
 
 function newData(req, res) {
     let { room_name, temperature, humidity, pressure } = req.body;
-
-    console.log('=========================');
-    console.log('Body: ');
-    console.log(req.body);
-    console.log('=========================');
-
     if (room_name === undefined || temperature === undefined || humidity === undefined || pressure === undefined) {
         res.status(400);
         res.send("Not enough arguments");
@@ -96,18 +60,19 @@ function newData(req, res) {
             res.status(400);
             res.send("Arguments are not numbers");
         } else {
-            console.log('=========================');
-            console.log(room_name);
-            console.log(temperature);
-            console.log(humidity);
-            console.log(pressure);
-            console.log('=========================');
-            make_request(`
+            pool
+                .query(`
                 INSERT INTO WeatherReadings(room_name, temperature, humidity, pressure)
-                VALUES
-                ('${room_name}', ${temperature}, ${humidity}, ${pressure})
-            `,
-                res);
+                VALUES (?, ?, ?, ?)`,
+                    [room_name, temperature, humidity, pressure])
+                .then(() => {
+                    res.status(200);
+                    res.send("OK");
+                })
+                .catch(err => {
+                    res.status(400);
+                    res.send("Querry error, problably this room name does not exist")
+                })
         }
     }
 }
@@ -115,8 +80,6 @@ function newData(req, res) {
 module.exports = {
     getRooms: getRooms,
     getWeather: getWeather,
-    getTemperature: getTemperature,
-    getHumidity: getHumidity,
-    getPressure: getPressure,
+    getWeatherBetween: getWeatherBetween,
     newData: newData,
 }

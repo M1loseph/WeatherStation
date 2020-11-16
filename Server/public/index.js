@@ -1,14 +1,9 @@
-const temperature = document.getElementById('temperature').getContext('2d');
-const humidity = document.getElementById('humidity').getContext('2d');
-const pressure = document.getElementById('pressure').getContext('2d');
-
 let temperatureChart = null;
 let humidityChart = null;
 let pressureChart = null;
 
-
 function showData(room, from, to, showTemperature, showHumidity, showPressure) {
-    fetch(`http://172.16.1.69/api/weather?room=${room}&from=${from}&to${to}`)
+    fetch(`http://localhost/api/weather/${room}/${from}/${to}`)
         .then(response => response.json())
         .then(json => {
 
@@ -19,10 +14,21 @@ function showData(room, from, to, showTemperature, showHumidity, showPressure) {
             if (pressureChart !== null)
                 pressureChart.destroy();
 
-            labels = json.map(e => new Date(e.time).toDateString());
+            const diff = new Date(to) - new Date(from);
+
+            // more than a day
+            let labels;
+            if (diff > 1000 * 60 * 60 * 24)
+                labels = json.map(e => new Date(e.time).toDateString());
+            else
+                labels = json.map(e => {
+                    date = new Date(e.time);
+                    return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+                });
+
 
             if (showTemperature) {
-                temperatureChart = new Chart(temperature, {
+                temperatureChart = new Chart($('#temperature'), {
                     type: 'line',
                     data: {
                         labels: labels,
@@ -38,7 +44,7 @@ function showData(room, from, to, showTemperature, showHumidity, showPressure) {
             }
 
             if (showHumidity) {
-                humidityChart = new Chart(humidity, {
+                humidityChart = new Chart($('#humidity'), {
                     type: 'line',
                     data: {
                         labels: labels,
@@ -54,7 +60,7 @@ function showData(room, from, to, showTemperature, showHumidity, showPressure) {
             }
 
             if (showPressure) {
-                pressureChart = new Chart(pressure, {
+                pressureChart = new Chart($('#pressure'), {
                     type: 'line',
                     data: {
                         labels: labels,
@@ -82,5 +88,9 @@ function parseForm(event) {
     const showHumidity = document.getElementById('input-humidity').checked;
     const showPressure = document.getElementById('input-pressure').checked;
 
-    showData(room, from, to, showTemperature, showHumidity, showPressure);
+    if (room !== '' && from !== '' && to !== '') {
+        showData(room, from, to, showTemperature, showHumidity, showPressure);
+    } else {
+        $('.modal').modal('show');
+    }
 }

@@ -46,6 +46,23 @@
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
 
+        <div class="modal fade" id="error-modal" tabindex="-1" role="dialog" aria-labelledby="label" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="label">You forgot something</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        You forgot to provide two dates and room name, try again!
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <canvas id="temperature"></canvas>
         <canvas id="humidity"></canvas>
         <canvas id="pressure"></canvas>
