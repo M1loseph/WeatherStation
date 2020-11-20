@@ -30,10 +30,10 @@ def const(size, loc, scale):
 
 
 rooms = [
-    ('room_one', uniform.rvs),
-    ('room_two', norm.rvs),
-    ('room_three', expon.rvs),
-    ('room_four', const)
+    (1, uniform.rvs),
+    (2, norm.rvs),
+    (3, expon.rvs),
+    (4, const)
 ]
 
 
@@ -58,7 +58,7 @@ for (_, generator) in rooms:
 for i in range(0, len(rooms)):
     for j in range(0, length):
         print(
-            f"('{rooms[i][0]}', {data[i][0][j]}, {data[i][1][j]}, {data[i][2][j]}, '{dates[j].strftime('%Y-%m-%d %H:%M:%S')}')")
+            f"({rooms[i][0]}, {data[i][0][j]}, {data[i][1][j]}, {data[i][2][j]}, '{dates[j].strftime('%Y-%m-%d %H:%M:%S')}'),")
 
     if show_plt:
         fig, ax = plt.subplots(nrows=3, ncols=1, figsize=(15, 6))
