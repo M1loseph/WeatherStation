@@ -68,7 +68,7 @@ void setup()
 
     weather w = read_bme();
     StaticJsonDocument<300> doc;
-    doc["room_name"] = config::room_name;
+    doc["room"] = config::room_name;
     doc["temperature"] = w.temperature;
     doc["humidity"] = w.humidity;
     doc["pressure"] = w.pressure;
