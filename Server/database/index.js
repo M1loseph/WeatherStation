@@ -26,16 +26,14 @@ function getWeather(room, success, error) {
         })
 }
 
-function getWeatherBetween(roomName, success, error, success, error) {
+function getWeatherBetween(roomName, from, to, success, error) {
     pool.query(`
         SELECT temperature, humidity, pressure, time
         FROM WeatherReadings
-        WHERE room_id = 
-        (
-            SELECT room_id
-            FROM Rooms
-            WHERE room_name = ?
-        )`, [roomName])
+        JOIN Rooms
+            USING (room_id)
+        WHERE room_name = ?
+            AND time BETWEEN ? AND ?`, [roomName, from, to])
         .then(rows => {
             success(rows);
         })
