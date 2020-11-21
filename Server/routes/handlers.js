@@ -2,8 +2,8 @@ const chalk = require('chalk')
 const db = require('./../database')
 const validateDate = require('./validators')
 
-const clientErr = (message) => console.log(chalk.yellow.inverse(message));
-const serverErr = (message) => console.log(chalk.red.bold.inverse(message));
+const clientErr = (message) => console.log(chalk.yellow(message));
+const serverErr = (message) => console.log(chalk.red.bold(message));
 
 function getRooms(_, res) {
     db.getRooms(
@@ -12,8 +12,7 @@ function getRooms(_, res) {
         },
         (err) => {
             serverErr(err);
-            res.status(500);
-            res.send('Server side error')
+            res.sendStatus(500);
         });
 }
 
@@ -23,9 +22,7 @@ function getWeather(req, res) {
         res.send(rows);
     }, (err) => {
         serverErr(err);
-        res.status(500);
-        res.send('Server side error')
-
+        res.sendStatus(500);
     });
 }
 
@@ -40,13 +37,11 @@ function getWeatherBetween(req, res) {
             },
             (err) => {
                 serverErr(err);
-                res.status(500);
-                res.send('Server side error');
+                res.sendStatus(500);
             });
     } else {
         clientErr(`[getWeatherBetween] Client arguments: ${from}, ${to}`);
-        res.status(400);
-        res.send('Incorrect date format');
+        res.sendStatus(400);
     }
 }
 
@@ -54,8 +49,7 @@ function newData(req, res) {
     let { room, temperature, humidity, pressure } = req.body;
     if (room === undefined) {
         clientErr(`[newData] Client arguments: ${room}`)
-        res.status(400);
-        res.send("Room name must be privided");
+        res.sendStatus(400);
     } else {
         temperature = temperature !== undefined ? parseFloat(temperature) : null;
         humidity = humidity !== undefined ? parseFloat(humidity) : null;
@@ -66,18 +60,15 @@ function newData(req, res) {
                        temperature: ${temperature},
                        humidity: ${humidity},
                        pressure: ${[pressure]}`);
-            res.status(400);
-            res.send("Arguments are not numbers");
+            res.sendStatus(400);
         } else {
             db.addWeatherReaging(room, temperature, humidity, pressure,
                 () => {
-                    res.status(200);
-                    res.send('OK');
+                    res.sendStatus(200);
                 },
                 (err) => {
                     serverErr(err);
-                    res.send(500);
-                    res.send('Server side error');
+                    res.sendStatus(500);
                 })
         }
     }

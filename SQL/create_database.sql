@@ -21,3 +21,8 @@ CREATE TABLE WeatherReadings
     pressure FLOAT DEFAULT NULL,
     time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+INSERT INTO Rooms (room_name)
+VALUES
+('milosz'),
+('seba');

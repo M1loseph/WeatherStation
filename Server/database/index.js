@@ -58,9 +58,9 @@ function addWeatherReaging(room, temperature, humidity, pressure, success, error
     pool
         .query(`
             INSERT INTO WeatherReadings(room_id, temperature, humidity, pressure)
-            VALUES
-            SELECT room_id, ?, ?, ? FROM Rooms
-            WHERE room_name = ?`,
+            SELECT room_id, ?, ?, ?
+            FROM Rooms
+            WHERE room_name = ? `,
             [temperature, humidity, pressure, room])
         .then(() => {
             success();
