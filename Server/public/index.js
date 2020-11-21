@@ -3,7 +3,7 @@ let humidityChart = null;
 let pressureChart = null;
 
 function showData(room, from, to, showTemperature, showHumidity, showPressure) {
-    fetch(`http://172.16.1.69/api/weather/${room}/${from}/${to}`)
+    fetch(`http://localhost/api/weather/${room}/${from}/${to}`)
         .then(response => response.json())
         .then(json => {
 
@@ -19,11 +19,13 @@ function showData(room, from, to, showTemperature, showHumidity, showPressure) {
             // more than a day
             let labels;
             if (diff > 1000 * 60 * 60 * 24)
-                labels = json.map(e => new Date(e.time).toDateString());
+                labels = json.map(e => {
+                    return e.time.split('T')[0];
+                });
             else
                 labels = json.map(e => {
                     date = new Date(e.time);
-                    return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+                    return date.toTimeString().split(' ')[0];
                 });
 
 
