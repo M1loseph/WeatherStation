@@ -3,7 +3,7 @@ let humidityChart = null;
 let pressureChart = null;
 
 function showData(room, from, to, showTemperature, showHumidity, showPressure) {
-    fetch(`http://localhost/api/weather/${room}/${from}/${to}`)
+    fetch(`http://172.16.1.69/api/weather/${room}/${from}/${to}`)
         .then(response => response.json())
         .then(json => {
 
