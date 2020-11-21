@@ -17,22 +17,19 @@
 
 namespace config
 {
-#ifdef LOW_POWER
-    constexpr uint64_t sleep_time = 30e6 * 10U;
-    constexpr uint64_t sleep_time_on_error = 10e7 * 10U;
-#else
-    constexpr uint64_t sleep_time = 30e6;
-    constexpr uint64_t sleep_time_on_error = 10e7;
-#endif
-
     constexpr uint32_t signalise_threshold = 20U;
-    constexpr const char *room_name = "seba";
     constexpr unsigned long monitor_speed = 115200;
 
 #ifdef ESP8266
     constexpr uint8_t diode_pin = D5;
+    constexpr uint64_t sleep_time = 30e7;
+    constexpr uint64_t sleep_time_on_error = 10e8;
+    constexpr const char *room_name = "seba";
 #elif defined(ESP32)
     constexpr uint8_t diode_pin = 33;
+    constexpr uint64_t sleep_time = 10e7;
+    constexpr uint64_t sleep_time_on_error = 10e7;
+    constexpr const char *room_name = "milosz";
 #endif
 } // namespace config
 
